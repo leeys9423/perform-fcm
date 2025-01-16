@@ -201,7 +201,7 @@ gradle-app.setting
 *.hprof
 
 ### redis directory ###
-redis/
+redis/config
 
 ### QueryDSL QClass ###
 **/generated/
