@@ -117,7 +117,7 @@ com.example.push
     - 상세 로깅
 
 3. 성능 최적화
-    - Redis 캐싱
+    - Redis를 활용한 메시지 큐 구현
     - 배치 처리
     - 비동기 메시지 처리
 
@@ -126,7 +126,7 @@ com.example.push
 erDiagram
     MEMBER {
         bigint id PK "학원생 ID"
-        string name "학생 이름"
+        varchar name "학생 이름"
         datetime created_at "생성일시"
         datetime updated_at "수정일시"
     }
@@ -134,14 +134,14 @@ erDiagram
     STUDENT_PARENT {
         bigint id PK "부모 ID"
         bigint student_id FK "학생 ID"
-        string name "부모 이름"
+       varchar name "부모 이름"
         datetime created_at "생성일시"
     }
 
     ATTENDANCE {
         bigint id PK "출결 ID"
         bigint student_id FK "학생 ID"
-        string type "출결 타입(등원/하원)"
+        varchar type "출결 타입(등원/하원)"
         datetime check_time "체크 시간"
         datetime created_at "생성일시"
     }
@@ -149,9 +149,9 @@ erDiagram
     DEVICE {
         bigint id PK "디바이스 ID"
         bigint parent_id FK "부모 ID"
-        string fcm_token "FCM 토큰"
+        varchar fcm_token "FCM 토큰"
         datetime last_active_at "마지막 활성 시간"
-        string status "상태"
+        varchar status "상태"
         datetime created_at "생성일시"
         datetime updated_at "수정일시"
     }
@@ -160,9 +160,9 @@ erDiagram
         bigint id PK "메시지 ID"
         bigint attendance_id FK "출결 ID"
         bigint parent_id FK "부모 ID"
-        string title "제목"
-        string body "내용"
-        string status "상태"
+        varchar title "제목"
+        varchar body "내용"
+        varchar status "상태"
         int retry_count "재시도 횟수"
         datetime created_at "생성일시"
     }
@@ -170,7 +170,7 @@ erDiagram
     PUSH_HISTORY {
         bigint id PK "이력 ID"
         bigint message_id FK "메시지 ID"
-        string send_result "발송 결과"
+        varchar send_result "발송 결과"
         datetime sent_at "발송 시간"
     }
 
