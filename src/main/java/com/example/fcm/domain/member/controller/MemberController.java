@@ -18,8 +18,7 @@ public class MemberController {
 
     @PostMapping
     public ResponseEntity<BaseResponse<Long>> createMember(@RequestBody @Valid MemberCreateRequest request) {
-        Long id = memberService.createMember(request);
-        return ResponseEntity.ok(BaseResponse.of(id, "회원 등록 성공"));
+        return ResponseEntity.ok(BaseResponse.of(memberService.createMember(request), "회원 등록 성공"));
     }
 
     @GetMapping("/{memberId}")
