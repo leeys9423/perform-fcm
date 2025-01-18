@@ -23,4 +23,8 @@ public class Member extends BaseEntity {
     public Member(String name) {
         this.name = name;
     }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
 }

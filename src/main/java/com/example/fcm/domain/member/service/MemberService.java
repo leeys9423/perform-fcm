@@ -1,6 +1,7 @@
 package com.example.fcm.domain.member.service;
 
 import com.example.fcm.domain.member.dto.request.MemberCreateRequest;
+import com.example.fcm.domain.member.dto.request.MemberUpdateRequest;
 import com.example.fcm.domain.member.entity.Member;
 import com.example.fcm.domain.member.exception.MemberNotFoundException;
 import com.example.fcm.domain.member.repository.MemberRepository;
@@ -23,5 +24,16 @@ public class MemberService {
     public Member getMember(Long memberId) {
         return memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+    }
+
+    @Transactional
+    public Member updateMember(MemberUpdateRequest request, Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                                        .orElseThrow(MemberNotFoundException::new);
+
+        member.changeName(request.getName());
+        memberRepository.save(member);
+
+        return member;
     }
 }
