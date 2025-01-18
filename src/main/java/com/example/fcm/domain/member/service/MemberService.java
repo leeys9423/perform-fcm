@@ -2,6 +2,7 @@ package com.example.fcm.domain.member.service;
 
 import com.example.fcm.domain.member.dto.request.MemberCreateRequest;
 import com.example.fcm.domain.member.dto.request.MemberUpdateRequest;
+import com.example.fcm.domain.member.dto.response.MemberResponse;
 import com.example.fcm.domain.member.entity.Member;
 import com.example.fcm.domain.member.exception.MemberNotFoundException;
 import com.example.fcm.domain.member.repository.MemberRepository;
@@ -21,30 +22,32 @@ public class MemberService {
         return memberRepository.save(member).getId();
     }
 
-    public Member getMember(Long memberId) {
-        return memberRepository.findById(memberId)
+    public MemberResponse getMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
+
+        return MemberResponse.of(member);
     }
 
     @Transactional
-    public Member updateMember(MemberUpdateRequest request, Long memberId) {
+    public MemberResponse updateMember(MemberUpdateRequest request, Long memberId) {
         Member member = memberRepository.findById(memberId)
                                         .orElseThrow(MemberNotFoundException::new);
 
         member.changeName(request.getName());
         memberRepository.save(member);
 
-        return member;
+        return MemberResponse.of(member);
     }
 
     @Transactional
-    public Member deleteMember(Long memberId) {
+    public MemberResponse deleteMember(Long memberId) {
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(MemberNotFoundException::new);
 
         member.inactive();
         memberRepository.save(member);
 
-        return member;
+        return MemberResponse.of(member);
     }
 }

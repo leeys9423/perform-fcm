@@ -2,6 +2,7 @@ package com.example.fcm.domain.member.controller;
 
 import com.example.fcm.domain.member.dto.request.MemberCreateRequest;
 import com.example.fcm.domain.member.dto.request.MemberUpdateRequest;
+import com.example.fcm.domain.member.dto.response.MemberResponse;
 import com.example.fcm.domain.member.entity.Member;
 import com.example.fcm.domain.member.service.MemberService;
 import com.example.fcm.global.common.BaseResponse;
@@ -23,17 +24,17 @@ public class MemberController {
     }
 
     @GetMapping("/{memberId}")
-    public ResponseEntity<BaseResponse<Member>> getMember(@PathVariable Long memberId) {
+    public ResponseEntity<BaseResponse<MemberResponse>> getMember(@PathVariable Long memberId) {
         return ResponseEntity.ok(BaseResponse.of(memberService.getMember(memberId), "회원 조회 성공"));
     }
 
     @PutMapping("/{memberId}")
-    public ResponseEntity<BaseResponse<Member>> updateMember(@RequestBody @Valid MemberUpdateRequest request, @PathVariable Long memberId) {
+    public ResponseEntity<BaseResponse<MemberResponse>> updateMember(@RequestBody @Valid MemberUpdateRequest request, @PathVariable Long memberId) {
         return ResponseEntity.ok(BaseResponse.of(memberService.updateMember(request, memberId), "회원 수정 완료"));
     }
 
     @DeleteMapping("/{memberId}")
-    public ResponseEntity<BaseResponse<Member>> deleteMember(@PathVariable Long memberId) {
+    public ResponseEntity<BaseResponse<MemberResponse>> deleteMember(@PathVariable Long memberId) {
         return ResponseEntity.ok(BaseResponse.of(memberService.deleteMember(memberId), "회원 삭제 완료"));
     }
 }
