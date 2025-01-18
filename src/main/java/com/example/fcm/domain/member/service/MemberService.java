@@ -36,4 +36,15 @@ public class MemberService {
 
         return member;
     }
+
+    @Transactional
+    public Member deleteMember(Long memberId) {
+        Member member = memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+
+        member.inactive();
+        memberRepository.save(member);
+
+        return member;
+    }
 }

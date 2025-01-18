@@ -31,4 +31,9 @@ public class MemberController {
     public ResponseEntity<BaseResponse<Member>> updateMember(@RequestBody @Valid MemberUpdateRequest request, @PathVariable Long memberId) {
         return ResponseEntity.ok(BaseResponse.of(memberService.updateMember(request, memberId), "회원 수정 완료"));
     }
+
+    @DeleteMapping("/{memberId}")
+    public ResponseEntity<BaseResponse<Member>> deleteMember(@PathVariable Long memberId) {
+        return ResponseEntity.ok(BaseResponse.of(memberService.deleteMember(memberId), "회원 삭제 완료"));
+    }
 }

@@ -19,6 +19,9 @@ public class Member extends BaseEntity {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private MemberStatus status;
+
     @Builder
     public Member(String name) {
         this.name = name;
@@ -26,5 +29,9 @@ public class Member extends BaseEntity {
 
     public void changeName(String name) {
         this.name = name;
+    }
+
+    public void inactive() {
+        this.status = MemberStatus.INACTIVE;
     }
 }
