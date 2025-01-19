@@ -1,11 +1,11 @@
-package com.example.fcm.domain.member.entity;
+package com.example.fcm.global.common;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum MemberStatus {
+public enum Status {
 
     ACTIVE("활성화"), INACTIVE("비활성화");
 

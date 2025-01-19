@@ -32,4 +32,10 @@ public class StudentParentController {
         studentParentService.updateStudentParent(request, parentId);
         return ResponseEntity.ok(BaseResponse.of(null, "부모 수정 성공"));
     }
+
+    @DeleteMapping("/{parentId}")
+    public ResponseEntity<BaseResponse<Void>> deleteStudentParent(@PathVariable Long parentId) {
+        studentParentService.deleteStudentParent(parentId);
+        return ResponseEntity.ok(BaseResponse.of(null, "부모 삭제 성공"));
+    }
 }

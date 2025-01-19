@@ -1,6 +1,7 @@
 package com.example.fcm.domain.member.entity;
 
 import com.example.fcm.global.common.BaseEntity;
+import com.example.fcm.global.common.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class Member extends BaseEntity {
     private String name;
 
     @Enumerated(EnumType.STRING)
-    private MemberStatus status;
+    private Status status;
 
     @Builder
     public Member(String name) {
@@ -32,6 +33,6 @@ public class Member extends BaseEntity {
     }
 
     public void inactive() {
-        this.status = MemberStatus.INACTIVE;
+        this.status = Status.INACTIVE;
     }
 }

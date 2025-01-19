@@ -1,6 +1,7 @@
 package com.example.fcm.domain.studentParent.entity;
 
 import com.example.fcm.global.common.BaseEntity;
+import com.example.fcm.global.common.Status;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,6 +21,9 @@ public class StudentParent extends BaseEntity {
     private Long studentId;
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     @Builder
     public StudentParent(Long studentId, String name) {
         this.studentId = studentId;
@@ -32,5 +36,9 @@ public class StudentParent extends BaseEntity {
 
     public void changeName(String name) {
         this.name = name;
+    }
+
+    public void inactive() {
+        this.status = Status.INACTIVE;
     }
 }

@@ -48,4 +48,11 @@ public class StudentParentService {
             studentParent.changeName(request.getName());
         }
     }
+
+    @Transactional
+    public void deleteStudentParent(Long parentId) {
+        StudentParent studentParent = studentParentRepository.findById(parentId).orElseThrow(ParentNotFoundException::new);
+
+        studentParent.inactive();
+    }
 }
