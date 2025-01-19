@@ -23,6 +23,10 @@ public class DeviceService {
     private final DeviceRepositoryCustom deviceRepositoryCustom;
     private final StudentParentFacade studentParentFacade;
 
+    public Device getDevice(Long deviceId) {
+        return deviceRepository.findById(deviceId).orElseThrow(DeviceNotFoundException::new);
+    }
+
     @Transactional
     public void createDevice(DeviceCreateRequest request) {
         if (!studentParentFacade.existParent(request.getParentId())) {
@@ -33,7 +37,7 @@ public class DeviceService {
         deviceRepository.save(device);
     }
 
-    public DeviceResponse getDevice(Long deviceId) {
+    public DeviceResponse getDeviceResponse(Long deviceId) {
         return deviceRepositoryCustom.findDeviceResponseById(deviceId)
                 .orElseThrow(DeviceNotFoundException::new);
     }
@@ -44,8 +48,15 @@ public class DeviceService {
 
     @Transactional
     public void updateFmcToken(DeviceUpdateRequest request, Long deviceId) {
-        Device device = deviceRepository.findById(deviceId).orElseThrow(DeviceNotFoundException::new);
+        Device device = getDevice(deviceId);
 
         device.changeFmcToken(request.getFmcToken());
+    }
+
+    @Transactional
+    public void deleteDevice(Long deviceId) {
+        Device device = getDevice(deviceId);
+
+        device.inactive();
     }
 }

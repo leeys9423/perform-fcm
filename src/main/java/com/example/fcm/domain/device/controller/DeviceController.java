@@ -27,7 +27,7 @@ public class DeviceController {
 
     @GetMapping("/{deviceId}")
     public ResponseEntity<BaseResponse<DeviceResponse>> getDevice(@PathVariable Long deviceId) {
-        return ResponseEntity.ok(BaseResponse.of(deviceService.getDevice(deviceId), "기기 조회 성공"));
+        return ResponseEntity.ok(BaseResponse.of(deviceService.getDeviceResponse(deviceId), "기기 조회 성공"));
     }
 
     @GetMapping("/parents/{parentId}")
@@ -39,5 +39,11 @@ public class DeviceController {
     public ResponseEntity<BaseResponse<Void>> updateFcmToken(@RequestBody @Valid DeviceUpdateRequest request, @PathVariable Long deviceId) {
         deviceService.updateFmcToken(request, deviceId);
         return ResponseEntity.ok(BaseResponse.of(null, "기기 수정 성공"));
+    }
+
+    @DeleteMapping("/{deviceId}")
+    public ResponseEntity<BaseResponse<Void>> deleteDevice(@PathVariable Long deviceId) {
+        deviceService.deleteDevice(deviceId);
+        return ResponseEntity.ok(BaseResponse.of(null, "기기 삭제 성공"));
     }
 }

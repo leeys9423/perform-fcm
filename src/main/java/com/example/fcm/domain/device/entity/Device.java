@@ -34,4 +34,8 @@ public class Device extends BaseEntity {
     public void changeFmcToken(String fmcToken) {
         this.fcmToken = fmcToken;
     }
+
+    public void inactive() {
+        this.status = Status.INACTIVE;
+    }
 }
