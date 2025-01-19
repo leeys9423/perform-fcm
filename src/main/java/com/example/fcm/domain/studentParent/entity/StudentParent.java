@@ -25,9 +25,10 @@ public class StudentParent extends BaseEntity {
     private Status status;
 
     @Builder
-    public StudentParent(Long studentId, String name) {
+    public StudentParent(Long studentId, String name, Status status) {
         this.studentId = studentId;
         this.name = name;
+        this.status = status;
     }
 
     public void changeStudent(Long studentId) {

@@ -14,4 +14,9 @@ public class MemberFacade {
     public Member getMember(Long memberId) {
         return memberService.getMember(memberId);
     }
+
+    public boolean existMember(Long memberId) {
+        return memberService.existMember(memberId);
+    }
+
 }

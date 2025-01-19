@@ -1,6 +1,7 @@
 package com.example.fcm.domain.member.dto.request;
 
 import com.example.fcm.domain.member.entity.Member;
+import com.example.fcm.global.common.Status;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class MemberCreateRequest {
     public Member toEntity() {
         return Member.builder()
                         .name(name)
+                        .status(Status.ACTIVE)
                         .build();
     }
 }

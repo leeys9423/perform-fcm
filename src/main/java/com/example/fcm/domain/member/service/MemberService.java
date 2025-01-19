@@ -21,6 +21,10 @@ public class MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
+    public boolean existMember(Long memberId) {
+        return memberRepository.existsById(memberId);
+    }
+
     @Transactional
     public Long createMember(MemberCreateRequest request) {
         Member member = request.toEntity();

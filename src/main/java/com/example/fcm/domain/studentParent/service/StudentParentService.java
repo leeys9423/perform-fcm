@@ -1,6 +1,7 @@
 package com.example.fcm.domain.studentParent.service;
 
 import com.example.fcm.domain.member.entity.Member;
+import com.example.fcm.domain.member.exception.MemberNotFoundException;
 import com.example.fcm.domain.member.facade.MemberFacade;
 import com.example.fcm.domain.studentParent.dto.request.StudentParentCreateRequest;
 import com.example.fcm.domain.studentParent.dto.request.StudentParentUpdateRequest;
@@ -22,9 +23,20 @@ public class StudentParentService {
     private final StudentParentRepository studentParentRepository;
     private final StudentParentRepositoryCustom studentParentRepositoryCustom;
 
+    public StudentParent getParent(Long parentId) {
+        return studentParentRepository.findById(parentId)
+                .orElseThrow(ParentNotFoundException::new);
+    }
+
+    public boolean existParent(Long parentId) {
+        return studentParentRepository.existsById(parentId);
+    }
+
     @Transactional
     public Long createStudentParent(StudentParentCreateRequest request) {
-        memberFacade.getMember(request.getStudentId());
+        if (!memberFacade.existMember(request.getStudentId())) {
+            throw new MemberNotFoundException();
+        }
 
         StudentParent studentParent = request.toEntity();
         return studentParentRepository.save(studentParent).getId();
@@ -37,7 +49,7 @@ public class StudentParentService {
 
     @Transactional
     public void updateStudentParent(StudentParentUpdateRequest request, Long parentId) {
-        StudentParent studentParent = studentParentRepository.findById(parentId).orElseThrow(ParentNotFoundException::new);
+        StudentParent studentParent = getParent(parentId);
 
         if (request.getStudentId() != null) {
             Member student = memberFacade.getMember(request.getStudentId());
@@ -51,7 +63,7 @@ public class StudentParentService {
 
     @Transactional
     public void deleteStudentParent(Long parentId) {
-        StudentParent studentParent = studentParentRepository.findById(parentId).orElseThrow(ParentNotFoundException::new);
+        StudentParent studentParent = getParent(parentId);
 
         studentParent.inactive();
     }
