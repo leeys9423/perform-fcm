@@ -1,6 +1,7 @@
 package com.example.fcm.domain.studentParent.dto.request;
 
 import com.example.fcm.domain.studentParent.entity.StudentParent;
+import com.example.fcm.global.common.Status;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -21,6 +22,8 @@ public class StudentParentCreateRequest {
     public StudentParent toEntity() {
         return StudentParent.builder()
                 .studentId(studentId)
-                .name(name).build();
+                .name(name)
+                .status(Status.ACTIVE)
+                .build();
     }
 }

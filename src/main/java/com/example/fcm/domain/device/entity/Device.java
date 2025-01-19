@@ -1,4 +1,4 @@
-package com.example.fcm.domain.member.entity;
+package com.example.fcm.domain.device.entity;
 
 import com.example.fcm.global.common.BaseEntity;
 import com.example.fcm.global.common.Status;
@@ -8,32 +8,26 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Entity
 @Getter
-@Table(name = "members")
+@Table(name = "devices")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Member extends BaseEntity {
+@Entity
+public class Device extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;
+    private Long parentId;
+    private String fcmToken;
 
     @Enumerated(EnumType.STRING)
     private Status status;
 
     @Builder
-    public Member(String name, Status status) {
-        this.name = name;
+    public Device(Long parentId, String fcmToken, Status status) {
+        this.parentId = parentId;
+        this.fcmToken = fcmToken;
         this.status = status;
-    }
-
-    public void changeName(String name) {
-        this.name = name;
-    }
-
-    public void inactive() {
-        this.status = Status.INACTIVE;
     }
 }
