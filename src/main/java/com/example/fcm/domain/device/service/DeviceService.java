@@ -1,6 +1,7 @@
 package com.example.fcm.domain.device.service;
 
 import com.example.fcm.domain.device.dto.request.DeviceCreateRequest;
+import com.example.fcm.domain.device.dto.request.DeviceUpdateRequest;
 import com.example.fcm.domain.device.dto.response.DeviceResponse;
 import com.example.fcm.domain.device.entity.Device;
 import com.example.fcm.domain.device.exception.DeviceNotFoundException;
@@ -39,5 +40,12 @@ public class DeviceService {
 
     public List<DeviceResponse> getDevicesByParent(Long parentId) {
         return deviceRepositoryCustom.findDeviceResponseByParentId(parentId);
+    }
+
+    @Transactional
+    public void updateFmcToken(DeviceUpdateRequest request, Long deviceId) {
+        Device device = deviceRepository.findById(deviceId).orElseThrow(DeviceNotFoundException::new);
+
+        device.changeFmcToken(request.getFmcToken());
     }
 }

@@ -1,6 +1,7 @@
 package com.example.fcm.domain.device.controller;
 
 import com.example.fcm.domain.device.dto.request.DeviceCreateRequest;
+import com.example.fcm.domain.device.dto.request.DeviceUpdateRequest;
 import com.example.fcm.domain.device.dto.response.DeviceResponse;
 import com.example.fcm.domain.device.service.DeviceService;
 import com.example.fcm.global.common.BaseResponse;
@@ -32,5 +33,11 @@ public class DeviceController {
     @GetMapping("/parents/{parentId}")
     public ResponseEntity<BaseResponse<List<DeviceResponse>>> getDevicesByParentId(@PathVariable Long parentId) {
         return ResponseEntity.ok(BaseResponse.of(deviceService.getDevicesByParent(parentId), "기기 조회 성공"));
+    }
+
+    @PutMapping("/{deviceId}")
+    public ResponseEntity<BaseResponse<Void>> updateFcmToken(@RequestBody @Valid DeviceUpdateRequest request, @PathVariable Long deviceId) {
+        deviceService.updateFmcToken(request, deviceId);
+        return ResponseEntity.ok(BaseResponse.of(null, "기기 수정 성공"));
     }
 }
