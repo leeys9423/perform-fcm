@@ -24,6 +24,7 @@ public class StudentParentRepositoryCustomImpl implements StudentParentRepositor
         return Optional.ofNullable(
                 queryFactory
                         .select(Projections.constructor(StudentParentResponse.class,
+                                studentParent.id,
                                 studentParent.name,
                                 member.name,
                                 studentParent.createdAt,

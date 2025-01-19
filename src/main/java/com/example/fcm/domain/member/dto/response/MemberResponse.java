@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Builder
 public class MemberResponse {
 
+    private Long id;
     private String name;
     private Status status;
     private LocalDateTime createdAt;
@@ -18,6 +19,7 @@ public class MemberResponse {
 
     public static MemberResponse of(Member member) {
         return MemberResponse.builder()
+                .id(member.getId())
                 .name(member.getName())
                 .status(member.getStatus())
                 .createdAt(member.getCreatedAt())
