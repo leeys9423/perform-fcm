@@ -1,6 +1,7 @@
 package com.example.fcm.domain.studentParent.controller;
 
 import com.example.fcm.domain.studentParent.dto.request.StudentParentCreateRequest;
+import com.example.fcm.domain.studentParent.dto.request.StudentParentUpdateRequest;
 import com.example.fcm.domain.studentParent.dto.response.StudentParentResponse;
 import com.example.fcm.domain.studentParent.service.StudentParentService;
 import com.example.fcm.global.common.BaseResponse;
@@ -24,5 +25,11 @@ public class StudentParentController {
     @GetMapping("/{parentId}")
     public ResponseEntity<BaseResponse<StudentParentResponse>> getStudentParent(@PathVariable Long parentId) {
         return ResponseEntity.ok(BaseResponse.of(studentParentService.getStudentParent(parentId), "부모 조회 성공"));
+    }
+
+    @PutMapping("/{parentId}")
+    public ResponseEntity<BaseResponse<Void>> updateStudentParent(@RequestBody @Valid StudentParentUpdateRequest request, @PathVariable Long parentId) {
+        studentParentService.updateStudentParent(request, parentId);
+        return ResponseEntity.ok(BaseResponse.of(null, "부모 수정 성공"));
     }
 }

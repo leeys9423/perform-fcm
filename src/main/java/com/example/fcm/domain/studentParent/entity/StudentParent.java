@@ -26,4 +26,11 @@ public class StudentParent extends BaseEntity {
         this.name = name;
     }
 
+    public void changeStudent(Long studentId) {
+        this.studentId = studentId;
+    }
+
+    public void changeName(String name) {
+        this.name = name;
+    }
 }
