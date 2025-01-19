@@ -25,7 +25,7 @@ public class MemberController {
 
     @GetMapping("/{memberId}")
     public ResponseEntity<BaseResponse<MemberResponse>> getMember(@PathVariable Long memberId) {
-        return ResponseEntity.ok(BaseResponse.of(memberService.getMember(memberId), "회원 조회 성공"));
+        return ResponseEntity.ok(BaseResponse.of(memberService.getMemberResponse(memberId), "회원 조회 성공"));
     }
 
     @PutMapping("/{memberId}")

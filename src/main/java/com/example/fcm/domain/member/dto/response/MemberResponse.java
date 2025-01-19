@@ -1,7 +1,7 @@
 package com.example.fcm.domain.member.dto.response;
 
 import com.example.fcm.domain.member.entity.Member;
-import com.example.fcm.domain.member.entity.MemberStatus;
+import com.example.fcm.global.common.Status;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class MemberResponse {
 
     private String name;
-    private MemberStatus status;
+    private Status status;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
 

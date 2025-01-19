@@ -16,23 +16,24 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
+    public Member getMember(Long memberId) {
+        return memberRepository.findById(memberId)
+                .orElseThrow(MemberNotFoundException::new);
+    }
+
     @Transactional
     public Long createMember(MemberCreateRequest request) {
         Member member = request.toEntity();
         return memberRepository.save(member).getId();
     }
 
-    public MemberResponse getMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
-
-        return MemberResponse.of(member);
+    public MemberResponse getMemberResponse(Long memberId) {
+        return MemberResponse.of(getMember(memberId));
     }
 
     @Transactional
     public MemberResponse updateMember(MemberUpdateRequest request, Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                                        .orElseThrow(MemberNotFoundException::new);
+        Member member = getMember(memberId);
 
         member.changeName(request.getName());
         memberRepository.save(member);
@@ -42,8 +43,7 @@ public class MemberService {
 
     @Transactional
     public MemberResponse deleteMember(Long memberId) {
-        Member member = memberRepository.findById(memberId)
-                .orElseThrow(MemberNotFoundException::new);
+        Member member = getMember(memberId);
 
         member.inactive();
         memberRepository.save(member);
