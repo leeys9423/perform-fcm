@@ -4,6 +4,8 @@ import com.example.fcm.domain.attendance.dto.request.AttendanceRequest;
 import com.example.fcm.domain.attendance.dto.response.AttendanceResponse;
 import com.example.fcm.domain.attendance.entity.Attendance;
 import com.example.fcm.domain.attendance.entity.AttendanceType;
+import com.example.fcm.domain.attendance.exception.AttendanceNotFoundException;
+import com.example.fcm.domain.attendance.exception.InvalidDeleteRequestException;
 import com.example.fcm.domain.attendance.repository.AttendanceRepository;
 import com.example.fcm.domain.attendance.repository.AttendanceRepositoryCustom;
 import com.example.fcm.domain.member.entity.Member;
@@ -67,6 +69,7 @@ public class AttendanceService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
     public List<AttendanceResponse> getTodayAttendances(Long studentId) {
         // 학생 존재 여부 확인
         Member member = memberFacade.getMember(studentId);
@@ -74,5 +77,17 @@ public class AttendanceService {
         return attendanceRepository.findTodayAttendances(studentId).stream()
                 .map(attendance -> AttendanceResponse.of(attendance, member.getName()))
                 .toList();
+    }
+
+    @Transactional
+    public void deleteAttendance(Long attendanceId) {
+        Attendance attendance = attendanceRepository.findById(attendanceId).orElseThrow(AttendanceNotFoundException::new);
+
+        // 당일 데이터만 삭제 가능하도록
+        if (!attendance.getAttendanceDate().equals(LocalDate.now())) {
+            throw new InvalidDeleteRequestException();
+        }
+
+        attendanceRepository.delete(attendance);
     }
 }

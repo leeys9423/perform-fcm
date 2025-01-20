@@ -40,4 +40,12 @@ public class AttendanceController {
     ) {
         return ResponseEntity.ok(BaseResponse.of(attendanceService.getTodayAttendances(studentId), "당일 출석 이력 조회 완료"));
     }
+
+    @DeleteMapping("/{attendanceId}")
+    public ResponseEntity<BaseResponse<Void>> deleteAttendance(
+            @PathVariable Long attendanceId
+    ) {
+        attendanceService.deleteAttendance(attendanceId);
+        return ResponseEntity.ok(BaseResponse.of(null, "출석 삭제 완료"));
+    }
 }

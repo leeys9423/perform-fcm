@@ -18,7 +18,11 @@ public enum ErrorCode {
     PARENT_NOT_FOUND("PAR-001", HttpStatus.NOT_FOUND, "부모 회원을 찾을 수 없습니다."),
 
     // 기기 관련 에러 코드
-    DEVICE_NOT_FOUND("DEV-001", HttpStatus.NOT_FOUND, "기기를 찾을 수 없습니다.");
+    DEVICE_NOT_FOUND("DEV-001", HttpStatus.NOT_FOUND, "기기를 찾을 수 없습니다."),
+
+    // 출석 관련 에러 코드
+    ATTENDANCE_NOT_FOUND("ATT-001", HttpStatus.NOT_FOUND, "출석 정보를 찾을 수 없습니다."),
+    INVALID_DELETE_REQUEST("ATT-002", HttpStatus.BAD_REQUEST, "당일 데이터만 삭제 가능합니다.");
 
     private final String code;
     private final HttpStatus status;
