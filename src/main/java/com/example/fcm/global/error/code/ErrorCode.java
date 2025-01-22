@@ -27,7 +27,10 @@ public enum ErrorCode {
     // Firebase 관련 에러 코드
     FCM_TOKEN_INVALID("FCM-001", HttpStatus.BAD_REQUEST, "유효하지 않은 토큰입니다."),
     FCM_SEND_FAILED("FCM-002", HttpStatus.INTERNAL_SERVER_ERROR, "메시지 전송에 실패했습니다."),
-    FCM_SERVER_ERROR("FCM-003", HttpStatus.INTERNAL_SERVER_ERROR, "FCM 서버 오류가 발생했습니다.");
+    FCM_SERVER_ERROR("FCM-003", HttpStatus.INTERNAL_SERVER_ERROR, "FCM 서버 오류가 발생했습니다."),
+
+    // 메세지 관련 에러
+    MESSAGE_PUBLISH_FAILED("MSG-001", HttpStatus.INTERNAL_SERVER_ERROR, "메시지 발행에 실패했습니다.");
 
     private final String code;
     private final HttpStatus status;

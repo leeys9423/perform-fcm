@@ -1,4 +1,4 @@
-package com.example.fcm.domain.pushMessage.dto.request;
+package com.example.fcm.domain.notification.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

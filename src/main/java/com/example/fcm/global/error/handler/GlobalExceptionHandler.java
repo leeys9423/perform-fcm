@@ -3,9 +3,8 @@ package com.example.fcm.global.error.handler;
 import com.example.fcm.global.error.code.ErrorCode;
 import com.example.fcm.global.error.exception.BusinessException;
 import com.example.fcm.global.error.exception.FcmException;
+import com.example.fcm.global.error.exception.MessagePublishException;
 import com.example.fcm.global.error.response.ErrorResponse;
-import com.google.api.gax.rpc.ApiException;
-import com.google.api.gax.rpc.InvalidArgumentException;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MessagingErrorCode;
 import lombok.extern.slf4j.Slf4j;
@@ -64,6 +63,12 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ErrorResponse> handleException(Exception e) {
         log.error("Unexpected error occurred: {}", e.getMessage(), e);
         return createErrorResponse(ErrorCode.INTERNAL_SERVER_ERROR);
+    }
+
+    @ExceptionHandler(MessagePublishException.class)
+    public ResponseEntity<ErrorResponse> handleMessagePublishException(MessagePublishException e) {
+        log.error("Message publish error occurred: {}", e.getMessage(), e);
+        return createErrorResponse(e.getErrorCode());
     }
 
     private ResponseEntity<ErrorResponse> createErrorResponse(ErrorCode errorCode) {

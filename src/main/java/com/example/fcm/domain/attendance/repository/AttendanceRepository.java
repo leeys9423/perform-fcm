@@ -15,7 +15,7 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Long> {
     @Query("select a from Attendance a " +
             "where a.studentId = :studentId " +
             "and a.checkTime between :startTime and :endTime " +
-            "order by a.checkTime desc")
+            "order by a.checkTime desc limit 1")
     Optional<Attendance> findTopByStudentIdAndCheckTimeBetweenOrderByCheckTimeDesc(Long studentId, LocalDateTime startTime, LocalDateTime endTime);
 
     @Query("select a from Attendance a " +

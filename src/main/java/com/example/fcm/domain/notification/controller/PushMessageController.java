@@ -1,7 +1,7 @@
-package com.example.fcm.domain.pushMessage.controller;
+package com.example.fcm.domain.notification.controller;
 
-import com.example.fcm.domain.pushMessage.dto.request.PushMessageTestRequest;
-import com.example.fcm.domain.pushMessage.service.PushMessageService;
+import com.example.fcm.domain.notification.dto.request.PushMessageTestRequest;
+import com.example.fcm.domain.notification.service.PushMessageService;
 import com.example.fcm.global.common.BaseResponse;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.validation.Valid;
