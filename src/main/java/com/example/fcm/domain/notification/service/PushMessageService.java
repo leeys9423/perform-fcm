@@ -29,7 +29,7 @@ public class PushMessageService {
         fcmService.sendMessage(request.getToken(), "제목", "테스트입니다.");
     }
 
-    private PushHistory savePushHistory(PushMessageEvent event, SendResult sendResult) {
+    public PushHistory savePushHistory(PushMessageEvent event, SendResult sendResult) {
         PushHistory history = PushHistory.builder()
                 .parentId(event.getParentId())
                 .notificationType(event.getType())
@@ -42,7 +42,7 @@ public class PushMessageService {
         return pushHistoryRepository.save(history);
     }
 
-    private void savePushMessage(PushMessageEvent event, Long historyId) {
+    public void savePushMessage(PushMessageEvent event, Long historyId) {
         PushMessage message = PushMessage.builder()
                 .parentId(event.getParentId())
                 .historyId(historyId)
@@ -58,16 +58,14 @@ public class PushMessageService {
     }
 
     // Redis 메시지 큐는 트랜잭션 미지원
+    // publish용 메서드
     @Transactional
     public void sendPushMessage(PushMessageEvent event) {
         try {
             publisher.publish(event);
-
-            savePushHistory(event, SendResult.SUCCESS);
         } catch (MessagePublishException e) {
             PushHistory history = savePushHistory(event, SendResult.FAIL);
             savePushMessage(event, history.getId());
         }
     }
-
 }
