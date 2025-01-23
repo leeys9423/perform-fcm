@@ -1,4 +1,4 @@
-package com.example.fcm.domain.message.dto.request;
+package com.example.fcm.domain.notification.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class MessageTestRequest {
+public class PushMessageTestRequest {
 
     @NotBlank(message = "토큰을 입력해주세요.")
     private String token;

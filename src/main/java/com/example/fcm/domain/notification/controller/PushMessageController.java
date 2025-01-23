@@ -1,7 +1,7 @@
-package com.example.fcm.domain.message.controller;
+package com.example.fcm.domain.notification.controller;
 
-import com.example.fcm.domain.message.dto.request.MessageTestRequest;
-import com.example.fcm.domain.message.service.MessageService;
+import com.example.fcm.domain.notification.dto.request.PushMessageTestRequest;
+import com.example.fcm.domain.notification.service.PushMessageService;
 import com.example.fcm.global.common.BaseResponse;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import jakarta.validation.Valid;
@@ -15,15 +15,15 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/messages")
-public class MessageController {
+public class PushMessageController {
 
-    private final MessageService messageService;
+    private final PushMessageService pushMessageService;
 
     @PostMapping("/test")
     public ResponseEntity<BaseResponse<Void>> testMessage(
-            @RequestBody @Valid MessageTestRequest request
+            @RequestBody @Valid PushMessageTestRequest request
     ) throws FirebaseMessagingException {
-        messageService.sendTestMessage(request);
+        pushMessageService.sendTestMessage(request);
         return ResponseEntity.ok(BaseResponse.of(null, "푸시 알림 전송 성공"));
     }
 }

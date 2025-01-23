@@ -10,6 +10,10 @@ import com.example.fcm.domain.attendance.repository.AttendanceRepository;
 import com.example.fcm.domain.attendance.repository.AttendanceRepositoryCustom;
 import com.example.fcm.domain.member.entity.Member;
 import com.example.fcm.domain.member.facade.MemberFacade;
+import com.example.fcm.domain.notification.dto.message.PushMessageEvent;
+import com.example.fcm.domain.notification.service.PushMessageService;
+import com.example.fcm.domain.studentParent.dto.response.StudentParentFcmResponse;
+import com.example.fcm.domain.studentParent.facade.StudentParentFacade;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +31,8 @@ public class AttendanceService {
     private final AttendanceRepository attendanceRepository;
     private final AttendanceRepositoryCustom attendanceRepositoryCustom;
     private final MemberFacade memberFacade;
+    private final StudentParentFacade studentParentFacade;
+    private final PushMessageService pushMessageService;
 
     @Transactional
     public AttendanceResponse checkAttendance(AttendanceRequest request) {
@@ -55,6 +61,19 @@ public class AttendanceService {
                 .attendanceDate(LocalDate.now())
                 .build();
         attendanceRepository.save(attendance);
+
+        List<StudentParentFcmResponse> tokens = studentParentFacade.getParentsFcmTokensByStudentId(request.getStudentId());
+        for (StudentParentFcmResponse token : tokens) {
+            PushMessageEvent event = PushMessageEvent.ofAttendance(
+                    member.getName(),
+                    attendance.getCheckTime(),
+                    token.getId(),
+                    attendance.getId(),
+                    token.getFcmToken(),
+                    attendance.getType());
+
+            pushMessageService.sendPushMessage(event);
+        }
 
         return AttendanceResponse.of(attendance, member.getName());
     }
