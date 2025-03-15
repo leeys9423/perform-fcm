@@ -2,22 +2,16 @@ package com.example.fcm.domain.attendance;
 
 import com.example.fcm.config.TestConfig;
 import com.example.fcm.domain.attendance.dto.request.AttendanceRequest;
-import com.example.fcm.domain.attendance.entity.Attendance;
-import com.example.fcm.domain.attendance.repository.AttendanceRepository;
 import com.example.fcm.domain.attendance.service.AttendanceService;
 import com.example.fcm.domain.device.entity.Device;
 import com.example.fcm.domain.device.repository.DeviceRepository;
 import com.example.fcm.domain.member.entity.Member;
 import com.example.fcm.domain.member.repository.MemberRepository;
 import com.example.fcm.domain.notification.dto.message.PushMessageEvent;
-import com.example.fcm.domain.notification.repository.PushHistoryRepository;
 import com.example.fcm.domain.notification.service.PushMessageService;
-import com.example.fcm.domain.studentParent.dto.response.StudentParentFcmResponse;
 import com.example.fcm.domain.studentParent.entity.StudentParent;
-import com.example.fcm.domain.studentParent.facade.StudentParentFacade;
 import com.example.fcm.domain.studentParent.repository.StudentParentRepository;
 import com.example.fcm.global.common.Status;
-import com.example.fcm.infra.redis.PushMessagePublisher;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,14 +22,14 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -102,7 +96,7 @@ public class AttendanceConcurrentTest {
         for (int i = 0; i < STUDENT_COUNT; i++) {
             // 1. 학생 생성
             Member student = Member.builder()
-                    .name("완전 테스트 학생 " + i)
+                    .name("통합 테스트 학생 " + i)
                     .status(Status.ACTIVE)
                     .build();
             Member savedStudent = memberRepository.save(student);
@@ -112,7 +106,7 @@ public class AttendanceConcurrentTest {
             for (int j = 0; j < PARENTS_PER_STUDENT; j++) {
                 StudentParent parent = StudentParent.builder()
                         .studentId(savedStudent.getId())
-                        .name("완전 테스트 부모 " + i + "-" + j)
+                        .name("통합 테스트 부모 " + i + "-" + j)
                         .status(Status.ACTIVE)
                         .build();
                 StudentParent savedParent = studentParentRepository.save(parent);
