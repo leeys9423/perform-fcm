@@ -29,7 +29,7 @@ public class PushMessageSubscriber {
             asyncTaskExecutor.execute(() -> processMessageAsync(event));
 
         } catch (Exception e) {
-            log.error("Failed to parse push message: {}", message, e);
+            log.error("푸시 메시지 파싱 실패: {}", message, e);
         }
     }
 
@@ -47,7 +47,7 @@ public class PushMessageSubscriber {
 
         } catch (Exception e) {
             // FCM 전송 실패 시 실패 이력 저장
-            log.error("Failed to send FCM message: {}", event, e);
+            log.error("FCM 메시지 전송 실패: {}", event, e);
             PushHistory history = pushMessageService.savePushHistory(event, SendResult.FAIL);
             pushMessageService.savePushMessage(event, history.getId());
         }
