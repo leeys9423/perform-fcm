@@ -13,9 +13,13 @@ import com.example.fcm.infra.fcm.FcmService;
 import com.example.fcm.infra.redis.PushMessagePublisher;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class PushMessageService {
@@ -42,7 +46,7 @@ public class PushMessageService {
         return pushHistoryRepository.save(history);
     }
 
-    public void savePushMessage(PushMessageEvent event, Long historyId) {
+    public PushMessage savePushMessage(PushMessageEvent event, Long historyId) {
         PushMessage message = PushMessage.builder()
                 .parentId(event.getParentId())
                 .historyId(historyId)
@@ -54,7 +58,10 @@ public class PushMessageService {
                 .retryCount(0)
                 .build();
 
-        pushMessageRepository.save(message);
+        message.setLastAttemptTime(LocalDateTime.now());
+        message.setNextAttemptTime(LocalDateTime.now());
+
+        return pushMessageRepository.save(message);
     }
 
     // Redis 메시지 큐는 트랜잭션 미지원
@@ -64,8 +71,15 @@ public class PushMessageService {
         try {
             publisher.publish(event);
         } catch (MessagePublishException e) {
+            log.error("푸시 메시지 발행 실패: {}", e.getMessage());
+
+            // 실패 히스토리 저장
             PushHistory history = savePushHistory(event, SendResult.FAIL);
-            savePushMessage(event, history.getId());
+
+            // 재시도 메시지 저장
+            PushMessage pushMessage = savePushMessage(event, history.getId());
+
+            log.info("재시도 메시지 저장 완료: ID={}", pushMessage.getId());
         }
     }
 }

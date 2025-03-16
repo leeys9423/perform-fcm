@@ -19,7 +19,7 @@ public class PushMessagePublisher {
         try {
             redisTemplate.convertAndSend("push-queue:normal", notification);
         } catch (Exception e) {
-            log.error("Failed to publish push notification: {}", notification, e);
+            log.error("푸시 알림 발행 실패: {}", notification, e);
             throw new MessagePublishException(ErrorCode.MESSAGE_PUBLISH_FAILED);
         }
     }

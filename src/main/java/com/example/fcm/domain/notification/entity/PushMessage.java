@@ -2,10 +2,9 @@ package com.example.fcm.domain.notification.entity;
 
 import com.example.fcm.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -28,9 +27,19 @@ public class PushMessage extends BaseEntity {
     private Long referenceId; // 각 알림별 타입 참조 ID
 
     @Enumerated(EnumType.STRING)
+    @Setter
     private MessageStatus status;
 
+    @Setter
     private int retryCount;
+
+    // 마지막 시도 시간 추가
+    @Setter
+    private LocalDateTime lastAttemptTime;
+
+    // 다음 시도 예정 시간 추가
+    @Setter
+    private LocalDateTime nextAttemptTime;
 
     @Builder
     public PushMessage(Long parentId, Long historyId, String title, String content, NotificationType notificationType, Long referenceId, MessageStatus status, int retryCount) {
