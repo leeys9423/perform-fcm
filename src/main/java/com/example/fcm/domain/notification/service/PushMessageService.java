@@ -1,5 +1,6 @@
 package com.example.fcm.domain.notification.service;
 
+import com.example.fcm.domain.metrics.service.PushMetricsService;
 import com.example.fcm.domain.notification.dto.message.PushMessageEvent;
 import com.example.fcm.domain.notification.dto.request.PushMessageTestRequest;
 import com.example.fcm.domain.notification.entity.MessageStatus;
@@ -12,6 +13,7 @@ import com.example.fcm.global.error.exception.MessagePublishException;
 import com.example.fcm.infra.fcm.FcmService;
 import com.example.fcm.infra.redis.PushMessagePublisher;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -28,6 +30,7 @@ public class PushMessageService {
     private final PushMessagePublisher publisher;
     private final PushMessageRepository pushMessageRepository;
     private final PushHistoryRepository pushHistoryRepository;
+    private final PushMetricsService pushMetricsService;
 
     public void sendTestMessage(PushMessageTestRequest request) throws FirebaseMessagingException {
         fcmService.sendMessage(request.getToken(), "제목", "테스트입니다.");
@@ -68,10 +71,21 @@ public class PushMessageService {
     // publish용 메서드
     @Transactional
     public void sendPushMessage(PushMessageEvent event) {
+        // 메트릭 카운터 증가
+        pushMetricsService.incrementPushRequests();
+
+        // 타이머 시작
+        Timer.Sample sample = pushMetricsService.startPushDeliveryTimer();
         try {
             publisher.publish(event);
+
+            // 성공 메트릭 업데이트
+            pushMetricsService.incrementPushSuccess();
         } catch (MessagePublishException e) {
             log.error("푸시 메시지 발행 실패: {}", e.getMessage());
+
+            // 실패 메트릭 업데이트
+            pushMetricsService.incrementPushFailure();
 
             // 실패 히스토리 저장
             PushHistory history = savePushHistory(event, SendResult.FAIL);
@@ -80,6 +94,9 @@ public class PushMessageService {
             PushMessage pushMessage = savePushMessage(event, history.getId());
 
             log.info("재시도 메시지 저장 완료: ID={}", pushMessage.getId());
+        } finally {
+            // 타이머 종료
+            pushMetricsService.stopPushDeliveryTimer(sample);
         }
     }
 }
