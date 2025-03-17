@@ -25,4 +25,7 @@ public interface PushMessageRepository extends JpaRepository<PushMessage, Long> 
             @Param("newStatus") MessageStatus newStatus,
             @Param("statuses") List<MessageStatus> statuses,
             @Param("cutoffTime") LocalDateTime cutoffTime);
+
+    // 메트릭용 메서드 추가
+    int countByStatus(MessageStatus status);
 }
