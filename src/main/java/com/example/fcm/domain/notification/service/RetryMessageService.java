@@ -1,12 +1,15 @@
 package com.example.fcm.domain.notification.service;
 
 import com.example.fcm.domain.device.service.DeviceService;
+import com.example.fcm.domain.metrics.service.PushMetricsService;
 import com.example.fcm.domain.notification.entity.MessageStatus;
 import com.example.fcm.domain.notification.entity.PushMessage;
 import com.example.fcm.domain.notification.repository.PushMessageRepository;
 import com.example.fcm.infra.fcm.FcmService;
 import com.example.fcm.infra.fcm.RedisTemplateManager;
 import com.google.firebase.messaging.FirebaseMessagingException;
+import com.google.firebase.messaging.MessagingErrorCode;
+import io.micrometer.core.instrument.Timer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,6 +28,7 @@ public class RetryMessageService {
     private final DeviceService deviceService;
     private final FcmService fcmService;
     private final RedisTemplateManager redisTemplateManager;
+    private final PushMetricsService pushMetricsService;
 
     private static final int MAX_RETRY_ATTEMPTS = 5;
 
@@ -34,6 +38,9 @@ public class RetryMessageService {
     @Transactional
     public void processRetryById(Long messageId) {
         try {
+            // 재시도 메트릭 증가
+            pushMetricsService.incrementRetryAttempts();
+
             // 메시지 조회
             Optional<PushMessage> messageOpt = pushMessageRepository.findById(messageId);
 
@@ -72,6 +79,9 @@ public class RetryMessageService {
 
         } catch (Exception e) {
             log.error("메시지 재시도 처리 중 예외 발생: ID={}", messageId, e);
+
+            // 에러 메트릭 증가
+            pushMetricsService.incrementProcessingError();
         }
     }
 
@@ -79,24 +89,52 @@ public class RetryMessageService {
      * FCM 메시지 전송
      */
     private void sendFcmMessage(PushMessage message, String fcmToken) {
+        Timer.Sample sample = pushMetricsService.startPushDeliveryTimer();
+
         try {
-            fcmService.sendMessage(
-                    fcmToken,
-                    message.getTitle(),
-                    message.getContent()
-            );
+            pushMetricsService.recordFcmRequestTime(() -> {
+                try {
+                    fcmService.sendMessage(
+                            fcmToken,
+                            message.getTitle(),
+                            message.getContent()
+                    );
+                    return true;
+                } catch (FirebaseMessagingException e) {
+                    throw new RuntimeException(e);
+                }
+            });
 
             // 성공 처리
             message.setStatus(MessageStatus.COMPLETED);
             pushMessageRepository.save(message);
 
+            // 성공 메트릭 증가
+            pushMetricsService.incrementRetrySuccess();
+
             log.info("FCM 메시지 재시도 성공: ID={}, 시도횟수={}",
                     message.getId(), message.getRetryCount());
 
-        } catch (FirebaseMessagingException e) {
-            log.error("FCM 메시지 재시도 실패: ID={}, 시도횟수={}, 오류={}",
-                    message.getId(), message.getRetryCount(), e.getMessage());
+        } catch (Exception e) {
+            // 실패 메트릭 증가
+            pushMetricsService.incrementRetryFailure();
+
+            if (e.getCause() instanceof FirebaseMessagingException fcmEx) {
+                if (fcmEx.getMessagingErrorCode() == MessagingErrorCode.INVALID_ARGUMENT) {
+                    pushMetricsService.incrementTokenInvalid();
+                }
+
+                log.error("FCM 메시지 재시도 실패: ID={}, 시도횟수={}, 오류={}",
+                        message.getId(), message.getRetryCount(), fcmEx.getMessage());
+            } else {
+                log.error("FCM 메시지 재시도 중 예외 발생: ID={}, 시도횟수={}",
+                        message.getId(), message.getRetryCount(), e);
+            }
+
             handleFailure(message);
+        } finally {
+            // 타이머 종료
+            pushMetricsService.stopPushDeliveryTimer(sample);
         }
     }
 
@@ -152,6 +190,7 @@ public class RetryMessageService {
 
         } catch (Exception e) {
             log.error("다음 재시도 스케줄링 실패: ID={}", messageId, e);
+            pushMetricsService.incrementProcessingError();
         }
     }
 }
