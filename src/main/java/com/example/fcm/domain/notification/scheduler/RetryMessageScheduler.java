@@ -3,7 +3,7 @@ package com.example.fcm.domain.notification.scheduler;
 import com.example.fcm.domain.notification.entity.MessageStatus;
 import com.example.fcm.domain.notification.entity.PushMessage;
 import com.example.fcm.domain.notification.repository.PushMessageRepository;
-import com.example.fcm.infra.fcm.RedisTemplateManager;
+import com.example.fcm.infra.redis.RedisTemplateManager;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -6,7 +6,7 @@ import com.example.fcm.domain.notification.entity.MessageStatus;
 import com.example.fcm.domain.notification.entity.PushMessage;
 import com.example.fcm.domain.notification.repository.PushMessageRepository;
 import com.example.fcm.infra.fcm.FcmService;
-import com.example.fcm.infra.fcm.RedisTemplateManager;
+import com.example.fcm.infra.redis.RedisTemplateManager;
 import com.google.firebase.messaging.FirebaseMessagingException;
 import com.google.firebase.messaging.MessagingErrorCode;
 import io.micrometer.core.instrument.Timer;
